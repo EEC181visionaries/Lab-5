@@ -1,0 +1,31 @@
+function [ output_args ] = func(testData,finalB1L1, finalB1L2, finalW1L1, finalW1L2, finalSoftmaxTheta,x )
+%FUNC Summary of this function goes here
+%   Detailed explanation goes here
+
+
+imshow(vec2mat(testData(:,x),28)');
+
+
+Vdat = testData(:,x);
+
+Vb1 = finalW1L1*Vdat;
+
+
+Vb1 = Vb1 + finalB1L1;
+
+Vb1 = sigmf(Vb1,[1 0]);
+
+Vb1 = finalW1L2*Vb1;
+
+Vb1 = Vb1 + finalB1L2;
+
+Vb1 = sigmf(Vb1,[1 0]);
+
+Vb1 = finalSoftmaxTheta*Vb1;
+
+output_args = Vb1;
+
+
+
+end
+
