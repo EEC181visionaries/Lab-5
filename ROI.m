@@ -17,10 +17,15 @@ for i = 1:2448
     col(1,i) = gray1(i,3000);
 end
 average = mean(col);
+if (average < 100)
+    level = .5;
+elseif (average < 150)
+    level = .7;
+end
 
 
 % Finding large ROI
-bw_70 = im2bw(gray1,.7);    % Converts gray to bw
+bw_70 = im2bw(gray1,level);    % Converts gray to bw
 
 [row,col] = size(bw_70);    % Finds dimensions of image
 
