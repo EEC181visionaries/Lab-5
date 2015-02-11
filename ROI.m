@@ -1,8 +1,11 @@
+function ROI(img_num)
 % ROI - Finds the region of interest
 %
 
+
+s = strcat(img_num,'.jpg');
 % Initializations
-rgb1 = imread('61.jpg');    % Reads in '61.jpg'
+rgb1 = imread(s);    % Reads in '61.jpg'
 gray1 = rgb2gray(rgb1);     % Converts img to grayscale
 x = 0;                      % Initialize large ROI
 y = 0;
@@ -33,32 +36,32 @@ prev_val = 0;
 val = 0;
 i = row/2;
 for j = 1:50:col
+    prev_val = val;
     if(bw_70(i,j) == 1)
         x = j;
-        prev_val = val;
         val = val + 1;
     end
     if (prev_val == val && val)
         val = 0;
     end
     if (val == 3)
-        disp(x);
+        %disp(x);
         val = 0;
         prev_val = 0;
         break
     end
 end
 for j = col:-50:1
+    prev_val = val;
     if(bw_70(i,j) == 1)
         y = j;
-        prev_val = val;
         val = val + 1;
     end
     if (prev_val == val && val)
         val = 0;
     end
     if (val == 3)
-        disp(y);
+        %disp(y);
         val = 0;
         prev_val = 0;
         break
@@ -67,32 +70,32 @@ end
 
 j = col/2;
 for i = 1:50:row
+    prev_val = val;
     if(bw_70(i,j) == 1)
         v = i;
-        prev_val = val;
         val = val + 1;
     end
     if (prev_val == val && val)
         val = 0;
     end
     if (val == 3)
-        disp(v);
+        %disp(v);
         val = 0;
         prev_val = 0;
         break
     end
 end
 for i = row:-50:1
+    prev_val = val;
     if (bw_70(i,j) == 1)
         w = i;
-        prev_val = val;
         val = val + 1;
     end
     if (prev_val == val && val)
         val = 0;
     end
     if (val == 3)
-        disp(w);
+        %disp(w);
         val = 0;
         prev_val = 0;
         break
@@ -106,43 +109,51 @@ lroi = bw_70(v:w,x:y);
 [row,col] = size(lroi);
 
 i = row/2;
-for j = 1:10:col
+i = round(i);
+for j = 1:5:col
+    prev_val = val;
     if(lroi(i,j) == 0)
-        x = j;
-        prev_val = val;
+        if (val == 0)
+            x = j;
+        end
         val = val + 1;
     end
     if (prev_val == val && val)
         val = 0;
     end
     if (val == 2)
-        disp(x);
+        %disp(x);
         val = 0;
         prev_val = 0;
         break
     end
 end
-for j = col:-10:1
+for j = col:-5:1
+    prev_val = val;
     if(lroi(i,j) == 0)
-        y = j;
-        prev_val = val;
+        if (val == 0)
+            y = j;
+        end
         val = val + 1;
     end
     if (prev_val == val && val)
         val = 0;
     end
     if (val == 2)
-        disp(y);
+        %disp(y);
         val = 0;
         prev_val = 0;
         break
     end
 end
 
-j = col/2;
-for i = 1:10:row
+j = 2*col/5;
+j = round(j);
+for i = 1:2:row
     if(lroi(i,j) == 0)
-        v = i;
+        if (val == 0)
+            v = i;
+        end
         prev_val = val;
         val = val + 1;
     end
@@ -150,15 +161,17 @@ for i = 1:10:row
         val = 0;
     end
     if (val == 2)
-        disp(v);
+        %disp(v);
         val = 0;
         prev_val = 0;
         break
     end
 end
-for i = row:-10:1
+for i = row:-2:1
     if (lroi(i,j) == 0)
-        w = i;
+        if (val == 0)
+            w = i;
+        end
         prev_val = val;
         val = val + 1;
     end
@@ -166,7 +179,7 @@ for i = row:-10:1
         val = 0;
     end
     if (val == 2)
-        disp(w);
+        %disp(w);
         val = 0;
         prev_val = 0;
         break
