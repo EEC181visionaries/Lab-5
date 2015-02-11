@@ -1,9 +1,16 @@
-function [ output_args ] = func(testData,finalB1L1, finalB1L2, finalW1L1, finalW1L2, finalSoftmaxTheta,testLabels )
-%Computes percentage correct, also computes list.
+function [ output_args ] = func(testData,finalB1L1, finalB1L2, finalW1L1, finalW1L2, finalSoftmaxTheta,testLabels,x )
+%FUNC Summary of this function goes here
+%   Detailed explanation goes here
 
 
 list = ones(1,10000);
+weights = ones(10,10000);
+wrong = ones(1,250);
 c = 1;
+w = 1;
+
+
+
 
 for i = 1:10000
 
@@ -16,7 +23,8 @@ for i = 1:10000
     Vb1 = Vb1 + finalB1L2;
     Vb1 = sigmf(Vb1,[1 0]);
     Vb1 = finalSoftmaxTheta*Vb1;
-
+    weights(:,i) = Vb1;
+    
     M = find(Vb1==max(Vb1));
 
     list(i) = M;
@@ -24,12 +32,17 @@ for i = 1:10000
     if(M == testLabels(i))
         c = c + 1;
     end
+    
+    if(M ~= testLabels(i))
+        wrong(w) = i;
+        w = w + 1;
+    end
         
 end
 
+imshow(vec2mat(testData(:,x),28)');
 
-
-output_args = c/10000;
+output_args = list, weights, wrong;
 
 
 
