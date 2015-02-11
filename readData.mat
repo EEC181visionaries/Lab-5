@@ -41,8 +41,9 @@ for i = 1:10000
 end
 
 imshow(vec2mat(testData(:,x),28)');
-
-output_args = list, weights, wrong;
+arg1 = list; 
+arg2 = weights;
+arg3 = wrong;
 
 
 
