@@ -24,19 +24,39 @@ bw_70 = im2bw(gray1,.7);    % Converts gray to bw
 
 [row,col] = size(bw_70);    % Finds dimensions of image
 
+prev_val = 0;
+val = 0;
 i = row/2;
 for j = 1:50:col
     if(bw_70(i,j) == 1)
         x = j;
+        prev_val = val;
+        val = val + 1;
+    end
+    if (prev_val == val && val)
+        val = 0;
+    end
+    if (val == 3)
         disp(x);
-        break;
+        val = 0;
+        prev_val = 0;
+        break
     end
 end
 for j = col:-50:1
     if(bw_70(i,j) == 1)
         y = j;
+        prev_val = val;
+        val = val + 1;
+    end
+    if (prev_val == val && val)
+        val = 0;
+    end
+    if (val == 3)
         disp(y);
-        break;
+        val = 0;
+        prev_val = 0;
+        break
     end
 end
 
@@ -44,18 +64,109 @@ j = col/2;
 for i = 1:50:row
     if(bw_70(i,j) == 1)
         v = i;
+        prev_val = val;
+        val = val + 1;
+    end
+    if (prev_val == val && val)
+        val = 0;
+    end
+    if (val == 3)
         disp(v);
+        val = 0;
+        prev_val = 0;
         break
     end
 end
 for i = row:-50:1
-    if(bw_70(i,j) == 1)
+    if (bw_70(i,j) == 1)
         w = i;
+        prev_val = val;
+        val = val + 1;
+    end
+    if (prev_val == val && val)
+        val = 0;
+    end
+    if (val == 3)
         disp(w);
+        val = 0;
+        prev_val = 0;
         break
     end
 end
 
 % Large ROI
-LROI = bw_70(v:w,x:y);
-imshow(LROI);
+lroi = bw_70(v:w,x:y);
+%imshow(lroi);
+
+[row,col] = size(lroi);
+
+i = row/2;
+for j = 1:10:col
+    if(lroi(i,j) == 0)
+        x = j;
+        prev_val = val;
+        val = val + 1;
+    end
+    if (prev_val == val && val)
+        val = 0;
+    end
+    if (val == 2)
+        disp(x);
+        val = 0;
+        prev_val = 0;
+        break
+    end
+end
+for j = col:-10:1
+    if(lroi(i,j) == 0)
+        y = j;
+        prev_val = val;
+        val = val + 1;
+    end
+    if (prev_val == val && val)
+        val = 0;
+    end
+    if (val == 2)
+        disp(y);
+        val = 0;
+        prev_val = 0;
+        break
+    end
+end
+
+j = col/2;
+for i = 1:10:row
+    if(lroi(i,j) == 0)
+        v = i;
+        prev_val = val;
+        val = val + 1;
+    end
+    if (prev_val == val && val)
+        val = 0;
+    end
+    if (val == 2)
+        disp(v);
+        val = 0;
+        prev_val = 0;
+        break
+    end
+end
+for i = row:-10:1
+    if (lroi(i,j) == 0)
+        w = i;
+        prev_val = val;
+        val = val + 1;
+    end
+    if (prev_val == val && val)
+        val = 0;
+    end
+    if (val == 2)
+        disp(w);
+        val = 0;
+        prev_val = 0;
+        break
+    end
+end
+
+roi = lroi(v:w,x:y);
+imshow(roi);
