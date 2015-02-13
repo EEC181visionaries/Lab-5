@@ -5,8 +5,8 @@ function ROI(img_num)
 
 s = strcat(img_num,'.jpg');
 % Initializations
-rgb1 = imread(s);    % Reads in '61.jpg'
-gray1 = rgb2gray(rgb1);     % Converts img to grayscale
+rgb = imread(s);    % Reads in '61.jpg'
+gray = rgb2gray(rgb);     % Converts img to grayscale
 x = 0;                      % Initialize large ROI
 y = 0;
 v = 0;
@@ -17,7 +17,7 @@ w = 0;
 % 0 = black; 255 = white
 col = zeros(1,2448);        % Initializes an array to find the avg
 for i = 1:2448
-    col(1,i) = gray1(i,3000);
+    col(1,i) = gray(i,3000);
 end
 average = mean(col);
 if (average < 100)
@@ -28,16 +28,16 @@ end
 
 
 % Finding large ROI
-bw_70 = im2bw(gray1,level);    % Converts gray to bw
+bw = im2bw(gray,level);    % Converts gray to bw
 
-[row,col] = size(bw_70);    % Finds dimensions of image
+[row,col] = size(bw);    % Finds dimensions of image
 
 prev_val = 0;
 val = 0;
 i = row/2;
 for j = 1:50:col
     prev_val = val;
-    if(bw_70(i,j) == 1)
+    if(bw(i,j) == 1)
         x = j;
         val = val + 1;
     end
@@ -53,7 +53,7 @@ for j = 1:50:col
 end
 for j = col:-50:1
     prev_val = val;
-    if(bw_70(i,j) == 1)
+    if(bw(i,j) == 1)
         y = j;
         val = val + 1;
     end
@@ -71,7 +71,7 @@ end
 j = col/2;
 for i = 1:50:row
     prev_val = val;
-    if(bw_70(i,j) == 1)
+    if(bw(i,j) == 1)
         v = i;
         val = val + 1;
     end
@@ -87,7 +87,7 @@ for i = 1:50:row
 end
 for i = row:-50:1
     prev_val = val;
-    if (bw_70(i,j) == 1)
+    if (bw(i,j) == 1)
         w = i;
         val = val + 1;
     end
@@ -103,7 +103,7 @@ for i = row:-50:1
 end
 
 % Large ROI
-lroi = bw_70(v:w,x:y);
+lroi = bw(v:w,x:y);
 %imshow(lroi);
 
 [row,col] = size(lroi);
@@ -186,5 +186,58 @@ for i = row:-2:1
     end
 end
 
-roi = lroi(v:w,x:y);
+roi = lroi(v:w,(x+3):(y-3));
+
+% Refining Region of Interest
+% If the first column top is black, check the bottom
+[row,col] = size(roi);    % Finds dimensions of image
+LeftTop = 0;
+LeftBottom = 0;
+RightTop = 0;
+RightBottom = 0;
+
+% If the element is black, store that address
+for i = 1:row
+    % Top Left
+    if (LeftTop == 0)
+        if (roi(i,1)==0)
+            LeftTop = i;
+        end
+    end
+    % Bottom Left
+    if (LeftBottom == 0)
+        if (roi((row-i),1)==0)
+            LeftBottom = (row-i);
+        end
+    end
+    % Top Right
+    if (RightTop == 0)
+        if (roi(i,col)==0)
+            RightTop = i;
+        end
+    end
+    % Bottom Right
+    if (RightBottom == 0)
+        if (roi((row-i),col)==0)
+            RightBottom = (row-i);
+        end
+    end
+    if (LeftTop && LeftBottom && RightTop && RightBottom)
+        break
+    end
+end
+
+if (LeftTop >= RightTop)
+    v = LeftTop;
+else
+    v = RightTop;
+end
+
+if (LeftBottom <= RightBottom)
+    w = LeftBottom;
+else
+    w = RightBottom;
+end
+
+roi = roi(v:w,1:col);
 imshow(roi);
