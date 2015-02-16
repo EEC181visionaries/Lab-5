@@ -1,15 +1,15 @@
 function [ output] = sFunc(finalB1L1, finalB1L2, finalW1L1, finalW1L2, finalSoftmaxTheta)
 
-imget = ROI();
+img = imread('http://eec181.ece.ucdavis.edu:8081/photo.jpg');
+imget = ROI(img);
+data = digit_separate(imget);
 
-data = digit_seperate(imget);
-
-[m,n] = Size(data);
+[m,n] = size(data);
 
 number = 0;
 
 for i = 1:n
-   M = analyze(finalB1L1, finalB1L2, finalW1L1, finalW1L2, finalSoftmaxTheta, data(:,i));
+   M = recognizer(finalB1L1, finalB1L2, finalW1L1, finalW1L2, finalSoftmaxTheta, data(:,i));
    number = (number*10) + M;
 end
 
@@ -19,7 +19,7 @@ output = number;
 
 end
 
-function [ output] = analyze(finalB1L1, finalB1L2, finalW1L1, finalW1L2, finalSoftmaxTheta, data)
+function [ output] = recognizer(finalB1L1, finalB1L2, finalW1L1, finalW1L2, finalSoftmaxTheta, data)
 %FUNC Summary of this function goes here
 %   Detailed explanation goes here
 
