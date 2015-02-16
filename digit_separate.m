@@ -3,47 +3,60 @@ function digit_matrix = digit_separate(roi)
 
 [row,col] = size(roi);
 
-i = row/2;  %start in the center row
+i = round(row/2);  %start in the center row
 j = 1;  %start at the leftmost column
 hit = 0;
 last_hit = 0;
+right_edge = 0;
 mid = 1;
 bad = 0;
+last = 0;
 last_mid = 1;
 digit_matrix = [];
 start = 0;
+first = 1;
 
-for j = 1:4:col
-   if ( (roi(i,j) == 1) || (j+4 > col) ) % if hit white, or hit end
-       i
-       j
-       roi(i,j)
-       50
-       hit = j;
-       mid = (hit - last_hit)/2 + last_hit; % put middle in between
-       mid = int64(mid)
-       
-       for (mid_row = 1:row) % check if white space was found in column
-           if (roi(mid_row,mid) == 1)
-               bad = 1;
-               100
-               break;
-           end
-       end
-       
-       if (bad ~= 1) % If there is no white, add digit to matrix
-           digit = roi(1:row,last_mid:mid);
-           digit = imresize(digit,[28,28]);
-           digit_vector = reshape(digit,784,1);
-           if (start == 0) % ignore the first digit (it is blank)
-               start = 1;
-           else
-               digit_matrix = [digit_matrix, digit_vector];
-           end
-           
-           last_mid = mid;
-       end
-       bad = 0;
-       last_hit = hit;
-   end
+for j= 1:4:col
+    if ( (roi(i,j) == 1) || (j+4 > col) ) % if hit white, or hit end
+        if (first == 1)
+            first = 0;
+            hit = 1;
+        else
+        if (hit == 0)
+
+            hit = 1;
+            mid = (j - right_edge)/2 + right_edge; % put middle in between
+            mid = int64(mid);
+            if (roi(i,j) == 1) % ignore if the end is reached
+            for mid_row = 1:row % check if white space was found in column
+                if (roi(mid_row,mid) == 1)
+                    bad = 1;
+                    break;
+                end
+            end
+            end
+            if ( bad ~= 1)
+                digit = roi(1:row,last_mid:mid);
+                digit = imresize(digit,[28,28]);
+                digit_vector = reshape(digit,784,1);
+                digit_matrix = [digit_matrix, digit_vector];
+                last_mid = mid;
+            end
+            
+        end
+        end
+        last = 1;
+    elseif (last == 1)
+        right_edge = j;
+        last = 0;
+        hit = 0;
+    else
+        last = 0;
+        hit = 0;
+    end
+    bad = 0;
+
+    
+    
+end
 end
