@@ -1,19 +1,17 @@
 function digit_matrix = digit_separate(roi)
 % takes the region of interest matrix and splits the numbers in them
+% then centers the numbers horizontally and vertically
 
 [row,col] = size(roi);
 
 i = round(row/2);  %start in the center row
 j = 1;  %start at the leftmost column
 hit = 0;
-last_hit = 0;
 right_edge = 0;
-mid = 1;
 bad = 0;
 last = 0;
 last_mid = 1;
 digit_matrix = [];
-start = 0;
 first = 1;
 
 for j= 1:4:col
@@ -37,32 +35,36 @@ for j= 1:4:col
             end
             if ( bad ~= 1)
                 digit = roi(1:row,last_mid:mid);
-                digit = imresize(digit,[28,28]);
                 
-                
-                
-                %center image vertically
+
+                % center image vertically
                 digit_left = 1;
-                digit_right = 28;
-                for k = 1:28
+                digit_right = mid-last_mid;
+                for k = 1:(mid-last_mid)
                     if (any(digit(:,k)))
                         digit_left = k;
                         break;
                     end
                 end
-                for k = 28:-1:1
+                for k = (mid-last_mid):-1:1
                    if (any(digit(:,k)))
                        digit_right = k;
                        break;
                    end
                 end
                 digit_width = digit_right - digit_left;
-                left_add = idivide((27-digit_width),int8(2),'ceil');
-                right_add = idivide((27-digit_width),int8(2),'floor');
-                left_add = zeros(28,left_add);
-                right_add = zeros(28,right_add);
+                left_add = idivide(int16(row-digit_width),int16(2),'ceil');
+                right_add = idivide(int16(row-digit_width),int16(2),'floor');
+                left_add = zeros(row,left_add);
+                right_add = zeros(row,right_add);
                 digit = [left_add digit(:,digit_left:digit_right) right_add];
                 %
+                
+                
+                
+                digit = imresize(digit,[28,28]);
+                
+                
                 
                 % center image horizontally
                 digit_top = 1;
@@ -85,10 +87,9 @@ for j= 1:4:col
                 top_add = zeros(top_add,28);
                 bottom_add = zeros(bottom_add,28);
                 digit = [top_add;digit(digit_top:digit_bottom,:);bottom_add];
+                %
                 
-                
-                
-                
+
                 digit_vector = reshape(digit,784,1);
                 digit_matrix = [digit_matrix, digit_vector];
                 last_mid = mid;
@@ -107,7 +108,5 @@ for j= 1:4:col
     end
     bad = 0;
 
-    
-    
 end
 end
